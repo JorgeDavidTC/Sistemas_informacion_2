@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registro de Usuario</title>
+    <link rel="stylesheet" href="css/registro.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>Registro de Nuevo Usuario</h2>
+        <form action="registro.php" method="POST" autocomplete="off">
+            <label for="nombre_usuario">Nombre de Usuario:</label>
+            <input type="text" id="nombre_usuario" name="nombre_usuario" required maxlength="1024" />
+
+            <label for="ci">Cédula de Identidad (CI):</label>
+            <input type="text" id="ci" name="ci" required maxlength="20" 
+                   pattern="[0-9]{5,15}" title="Ingrese solo números entre 5 y 15 dígitos" />
+
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" name="email" required maxlength="1024" />
+
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" id="contrasena" name="contrasena" required maxlength="1024" />
+
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" name="telefono" pattern="[0-9]{7,15}" 
+                   title="Ingrese solo números, entre 7 y 15 dígitos" required />
+
+            <!-- NUEVOS CAMPOS -->
+            <label for="facultad">Facultad:</label>
+            <select id="facultad" name="facultad" required>
+                <option value="">-- Seleccione una Facultad --</option>
+                <option value="ingenieria">Facultad de Tecnologia</option>
+                <option value="economia">Facultad de Ciencias Económicas</option>
+                <option value="derecho">Facultad de Derecho</option>
+                <option value="medicina">Facultad de Medicina</option>
+                <option value="humanidades">Facultad de Humanidades</option>
+            </select>
+
+            <label for="carrera">Carrera:</label>
+            <select id="carrera" name="carrera" required>
+                <option value="">-- Seleccione una Carrera --</option>
+            </select>
+            <!-- FIN NUEVOS CAMPOS -->
+
+            <div class="button-group">
+                <button type="submit">Registrar</button>
+                <button type="button" onclick="window.location.href='login.html'">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const carrerasPorFacultad = {
+            ingenieria: [
+                { value: "sistemas", text: "Ingeniería de Sistemas" },
+                { value: "civil", text: "Ingeniería Civil" },
+                { value: "industrial", text: "Ingeniería Industrial" }
+            ],
+            economia: [
+                { value: "contaduria", text: "Contaduría Pública" },
+                { value: "administracion", text: "Administración de Empresas" }
+            ],
+            derecho: [
+                { value: "derecho", text: "Derecho" }
+            ],
+            medicina: [
+                { value: "medicina", text: "Medicina" }
+            ],
+            humanidades: [
+                { value: "psicologia", text: "Psicología" },
+                { value: "comunicacion", text: "Comunicación Social" }
+            ]
+        };
+
+        const facultadSelect = document.getElementById("facultad");
+        const carreraSelect = document.getElementById("carrera");
+
+        facultadSelect.addEventListener("change", function () {
+            const facultad = this.value;
+            carreraSelect.innerHTML = '<option value="">-- Seleccione una Carrera --</option>';
+
+            if (facultad && carrerasPorFacultad[facultad]) {
+                carrerasPorFacultad[facultad].forEach(carrera => {
+                    const option = document.createElement("option");
+                    option.value = carrera.value;
+                    option.textContent = carrera.text;
+                    carreraSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
