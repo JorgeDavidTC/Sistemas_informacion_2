@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f5ef; /* tono cálido suave */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #5a4d3c; /* marrón oscuro */
+}
+
+.container {
+    background: #faf8f0; /* caja clara y cálida */
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(228, 217, 184, 0.3); /* sombra cálida */
+    width: 100%;
+    max-width: 400px;
+    border: 2px solid #e4d9b8; /* marrón claro para borde */
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #6f5e36; /* marrón medio */
+}
+
+label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+    color: #6f5e36; /* marrón medio */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border: 1.5px solid #e4d9b8; /* borde suave */
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: #f7f5ef; /* beige muy suave */
+    color: #5a4d3c;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus {
+    border-color: #b3a575; /* dorado apagado al enfocar */
+    outline: none;
+    background-color: #faf8f0;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.button-group button {
+    width: 48%;
+    padding: 0.7rem;
+    background-color: #e4d9b8; /* marrón claro */
+    color: #6f5e36; /* marrón medio */
+    border: 2px solid #b3a575; /* dorado apagado */
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.button-group button:hover {
+    background-color: #b3a575; /* dorado apagado */
+    color: #faf8f0; /* texto claro */
+    border-color: #6f5e36; /* marrón medio */
+}
