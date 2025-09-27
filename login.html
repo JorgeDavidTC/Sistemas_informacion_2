@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SAGA Login</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+    <div class="login-text">Login</div>
+    <div class="login-container">
+        <img src="img\sanSimon-removebg-preview.png" alt="Logo" class="logo">
+        <h1 class="login-title">“SAGA Z”</h1>
+
+        <form action="login.php" method="POST">
+            <input type="text" name="usuario" placeholder="Usuario" required><br>
+            <input type="password" name="password" placeholder="Contraseña" id="password" required><br>
+
+            <div class="checkbox">
+                <input type="checkbox" onclick="togglePassword()"> Mostrar contraseña
+            </div>
+
+            <button type="submit">INGRESAR</button><br>
+            <button type="button" onclick="location.href='postulante.html'">POSTULANTE</button><br>
+
+            <div class="forgot">
+                <a href="recuperar.php">¿Olvidaste tu contraseña?</a>
+            </div>
+        </form>
+        
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById("password");
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+        }
+    </script>
+</body>
+</html>
