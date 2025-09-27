@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $db_name = "gestion_postulantes";
+    private $db_name = "admisiones_unificadas";
     private $username = "root";
     private $password = "";
     public $conn;
