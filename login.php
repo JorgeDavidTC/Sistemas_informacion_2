@@ -5,7 +5,7 @@ session_start();
 $host = "localhost";
 $usuarioBD = "root";
 $contrasenaBD = "";
-$baseDeDatos = "admisiones";
+$baseDeDatos = "admisiones_unificadas";
 
 $conn = new mysqli($host, $usuarioBD, $contrasenaBD, $baseDeDatos);
 if ($conn->connect_error) {
@@ -21,7 +21,7 @@ if (empty($usuario) || empty($password)) {
 }
 
 // Revisar usuario en tabla 'usuarios'
-$stmt = $conn->prepare("SELECT id_usuario, nombre, contrasena, es_admin FROM usuarios WHERE nombre = ?");
+$stmt = $conn->prepare("SELECT id_usuario, nombre, contrasena, rol FROM usuarios WHERE nombre = ?");
 $stmt->bind_param("s", $usuario);
 $stmt->execute();
 $resultado = $stmt->get_result();
@@ -29,14 +29,17 @@ $resultado = $stmt->get_result();
 if ($resultado->num_rows === 1) {
     $fila = $resultado->fetch_assoc();
 
-    if ($fila['contrasena'] === $password) { // Para producción usar password_hash
+    // Aquí usamos la contraseña tal cual se ingresó
+    if ($fila['contrasena'] === $password) {
         $_SESSION['id_usuario'] = $fila['id_usuario'];
         $_SESSION['usuario'] = $fila['nombre'];
-        $_SESSION['es_admin'] = $fila['es_admin'];
+        $_SESSION['rol'] = $fila['rol'];
 
-        // Redirigir a página principal según rol
-        if ($fila['es_admin']) {
-            header("Location: admin_dashboard.php");
+        // Redirigir según rol
+        if ($fila['rol'] === 'admin') {
+            header("Location: administrador.php");
+        } elseif ($fila['rol'] === 'personal_admision') {
+            header("Location: admision_dashboard.php");
         } else {
             header("Location: postulante_dashboard.php");
         }
