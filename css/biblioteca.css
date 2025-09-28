@@ -1,0 +1,127 @@
+/* Fondo degradado */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #677E8A, #ABAFB5);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezado */
+header {
+  background: #122E34;
+  color: #E0B4B2;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.8em;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+/* Área principal */
+main {
+  flex: 1;
+  padding: 30px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Formulario */
+form {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+select, button {
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1em;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+select {
+  background: #ABAFB5;
+  color: #0E1D21;
+}
+button {
+  background: #622347;
+  color: #E0B4B2;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+button:hover {
+  background: #0E1D21;
+  transform: translateY(-2px);
+}
+
+/* Mensajes */
+.msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #122E34;
+  font-weight: 500;
+}
+
+/* Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.card {
+  background: #E0B4B2;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+.card h3 {
+  margin: 0 0 10px;
+  color: #0E1D21;
+}
+.card p {
+  font-size: 0.9em;
+  color: #122E34;
+}
+.card a {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+  background: #122E34;
+  color: #E0B4B2;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+.card a:hover {
+  background: #0E1D21;
+}
+
+/* Botón volver */
+.volver {
+  margin-top: 30px;
+  text-align: center;
+}
+.volver button {
+  background: #122E34;
+  color: #E0B4B2;
+}
+.volver button:hover {
+  background: #0E1D21;
+}
+
+/* Footer */
+footer {
+  background: #0E1D21;
+  color: #ABAFB5;
+  text-align: center;
+  padding: 12px;
+  font-size: 0.9em;
+}
