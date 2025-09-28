@@ -5,82 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Postulante de Usuario</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-body {
-    font-family: 'Roboto', sans-serif;
-    background: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-}
-.container {
-    background: #fff;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-}
-h2 {
-    margin-bottom: 20px;
-    color: #333;
-}
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    text-align: left;
-}
-label {
-    font-weight: 500;
-    margin-bottom: 5px;
-}
-input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="date"], select, textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-textarea {
-    resize: vertical;
-}
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 10px;
-}
-button {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: 500;
-}
-button[type="submit"] {
-    background-color: #28a745;
-    color: white;
-}
-button[type="button"] {
-    background-color: #dc3545;
-    color: white;
-}
-input[type="file"] {
-    border: none;
-    padding: 0;
-}
-</style>
+<link rel="stylesheet" href="css/postulante.css">
 </head>
 <body>
 <div class="container">
-    <h2>postulante de Nuevo Usuario</h2>
+    <h2>Postulante de Nuevo Usuario</h2>
     <form action="postulante.php" method="POST" enctype="multipart/form-data" autocomplete="off">
         <label for="nombre_usuario">Nombre:</label>
         <input type="text" id="nombre_usuario" name="nombre_usuario" required maxlength="100" />
@@ -139,11 +68,25 @@ input[type="file"] {
 
 <script>
 const carrerasPorFacultad = {
-    ingenieria: [{ value: "1", text: "Ingeniería de Sistemas" }, { value: "2", text: "Ingeniería Civil" }, { value: "3", text: "Ingeniería Industrial" }],
-    economia: [{ value: "4", text: "Contaduría Pública" }, { value: "5", text: "Administración de Empresas" }],
-    derecho: [{ value: "6", text: "Derecho" }],
-    medicina: [{ value: "7", text: "Medicina" }],
-    humanidades: [{ value: "8", text: "Psicología" }, { value: "9", text: "Comunicación Social" }]
+    ingenieria: [
+        { value: "1", text: "Ingeniería de Sistemas" },
+        { value: "2", text: "Ingeniería Civil" },
+        { value: "3", text: "Ingeniería Industrial" }
+    ],
+    economia: [
+        { value: "4", text: "Contaduría Pública" },
+        { value: "5", text: "Administración de Empresas" }
+    ],
+    derecho: [
+        { value: "6", text: "Derecho" }
+    ],
+    medicina: [
+        { value: "7", text: "Medicina" }
+    ],
+    humanidades: [
+        { value: "8", text: "Psicología" },
+        { value: "9", text: "Comunicación Social" }
+    ]
 };
 
 const facultadSelect = document.getElementById("facultad");

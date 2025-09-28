@@ -9,51 +9,74 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {margin: 0; padding: 0; font-family: 'Poppins', sans-serif; display: flex; height: 100vh;}
-    .video-section {position: relative; width: 50%; height: 100vh; overflow: hidden;}
-    .video-section video {width: 100%; height: 100%; object-fit: cover;}
-    .video-overlay {position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);}
-    .video-content {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; text-align: center; padding: 20px;}
-    .form-section {width: 50%; display: flex; align-items: center; justify-content: center; background: #f7f7f7;}
+    
+    /* --- SECCIÓN DE LA IMAGEN --- */
+    .image-section {
+      position: relative;
+      width: 50%;
+      height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e'); 
+      background-size: cover;
+      background-position: center;
+    }
+    .image-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+    }
+    .image-content {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      max-width: 80%;
+    }
+    .image-content h1 {font-size: 2rem; margin-bottom: 15px;}
+    .image-content p {font-size: 0.95rem; line-height: 1.6;}
+
+    /* --- FORMULARIO --- */
+    .form-section {width: 50%; display: flex; align-items: center; justify-content: center; background: #ABAFB5;}
     .form-container {background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); width: 100%; max-width: 380px; text-align: center;}
     .form-container img.logo {width: 100px; margin-bottom: 10px;}
-    h2 {margin-bottom: 10px; color: #4a5d00;}
+    h2 {margin-bottom: 10px; color: #122E34;}
     .input-group {margin-bottom: 15px; text-align: left;}
-    .input-group label {display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; color: #333;}
-    .input-with-icon {display: flex; align-items: center; border: 1px solid #ccc; border-radius: 8px; padding: 8px;}
-    .input-with-icon i {margin-right: 8px; color: #888;}
+    .input-group label {display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; color: #0E1D21;}
+    .input-with-icon {display: flex; align-items: center; border: 1px solid #677E8A; border-radius: 8px; padding: 8px;}
+    .input-with-icon i {margin-right: 8px; color: #677E8A;}
     .input-with-icon input {border: none; outline: none; flex: 1; font-size: 0.9rem;}
-    .checkbox {font-size: 0.8rem; margin: 10px 0; text-align: left;}
-    button {width: 100%; padding: 10px; border: none; border-radius: 8px; background: linear-gradient(45deg, #84b72d, #a9d52c); color: #fff; font-weight: 600; cursor: pointer; margin-bottom: 10px;}
-    button:hover {background: linear-gradient(45deg, #9dd12b, #c2f20a);}
+    .checkbox {font-size: 0.8rem; margin: 10px 0; text-align: left; color: #0E1D21;}
+    button {width: 100%; padding: 10px; border: none; border-radius: 8px; background: linear-gradient(45deg, #122E34, #0E1D21); color: #fff; font-weight: 600; cursor: pointer; margin-bottom: 10px;}
+    button:hover {background: linear-gradient(45deg, #677E8A, #122E34);}
     .forgot, .register {margin-top: 10px; font-size: 0.85rem;}
-    .forgot a, .register a {color: #4a5d00; text-decoration: none; font-weight: bold;}
+    .forgot a, .register a {color: #622347; text-decoration: none; font-weight: bold;}
   </style>
 </head>
 <body>
-  <!-- Sección del video -->
-  <div class="video-section">
-    <div class="video-overlay"></div>
-    <video autoplay muted loop>
-      <source src="videos/background.mp4" type="video/mp4">
-      Tu navegador no soporta videos HTML5.
-    </video>
-    <div class="video-content">
+  <!-- Sección de la imagen -->
+  <div class="image-section">
+    <div class="image-overlay"></div>
+    <div class="image-content">
       <h1>Bienvenido a SAGA Z</h1>
-      <p>Cada gran sueño comienza con una meta y cada meta comienza con un primer paso.
-El camino hacia la universidad no siempre es fácil: habrá noches largas de estudio, momentos de duda y cansancio. Pero recuerda: todo esfuerzo que hagas hoy es una inversión en tu futuro.
-
-La universidad no solo te dará conocimientos, sino también experiencias, amistades y oportunidades que transformarán tu vida. Cree en ti, en tu capacidad de aprender y superar cualquier obstáculo.
-
-Nunca olvides: los que perseveran alcanzan, y tú tienes todo lo necesario para lograrlo.
-
-¡Confía, trabaja duro y tu lugar en la universidad será la recompensa de tu constancia!</p>
+      <p>
+        Cada gran sueño comienza con una meta y cada meta comienza con un primer paso.
+        El camino hacia la universidad no siempre es fácil: habrá noches largas de estudio, momentos de duda y cansancio. 
+        Pero recuerda: todo esfuerzo que hagas hoy es una inversión en tu futuro.
+        <br><br>
+        La universidad no solo te dará conocimientos, sino también experiencias, amistades y oportunidades que transformarán tu vida. 
+        Cree en ti, en tu capacidad de aprender y superar cualquier obstáculo.
+        <br><br>
+        ¡Confía, trabaja duro y tu lugar en la universidad será la recompensa de tu constancia!
+      </p>
     </div>
   </div>
 
   <!-- Sección del formulario -->
   <div class="form-section">
     <div class="form-container">
-      <img src="img/sanSimon-removebg-preview.png" alt="Logo" class="logo">
+      <img src="uploads/image.png" alt="Logo" class="logo">
       <h2>Iniciar Sesión</h2>
       <form action="login.php" method="POST">
         <div class="input-group">
@@ -73,7 +96,7 @@ Nunca olvides: los que perseveran alcanzan, y tú tienes todo lo necesario para 
         </div>
 
         <div class="checkbox">
-          <input type="checkbox" onclick="togglePassword()"> Mostrar contraseña
+          <input type="checkbox" onclick="togglePassword()"> Mostrar contraseña 
         </div>
 
         <button type="submit">INGRESAR</button>
