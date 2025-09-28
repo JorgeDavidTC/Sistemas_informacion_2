@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenida - Maria Vargas Zurita</title>
+  <link rel="stylesheet" href="style_perfil_postulante.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- ENCABEZADO SUPERIOR -->
+  <header class="header">
+    <div class="header-left">
+      <h1>Maria Vargas Zurita</h1>
+      <p>Facultad: Ciencias y Tecnología</p>
+    </div>
+    <div class="header-right">
+      <p>Rol: Postulante</p>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="container">
+    <!-- CONTENIDO IZQUIERDO -->
+    <main class="main-content">
+      <section>
+        <h2>📚 Material de Estudio</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Álgebra y Aritmética</th>
+              <th>Trigonometría y Geometría</th>
+              <th>Física</th>
+              <th>Química</th>
+              <th>Biología</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>📘 Tema pendiente</td>
+              <td>📐 Tema pendiente</td>
+              <td>⚡ Tema pendiente</td>
+              <td>🧪 Tema pendiente</td>
+              <td>🌱 Tema pendiente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>📝 Exámenes Pasados</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Año</th>
+              <th>Gestión</th>
+              <th>Álgebra y Aritmética</th>
+              <th>Trigonometría y Geometría</th>
+              <th>Física</th>
+              <th>Química</th>
+              <th>Biología</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2024</td>
+              <td>1</td>
+              <td>📘 Examen</td>
+              <td>📐 Examen</td>
+              <td>⚡ Examen</td>
+              <td>🧪 Examen</td>
+              <td>🌱 Examen</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <!-- PANEL DERECHO FIJO -->
+   <aside class="sidebar">
+  <!-- Bloque superior: foto + info -->
+  <div class="profile-top">
+    <div class="profile-photo">
+      <img src="imagenes/perfil.jpg" alt="Foto de perfil" id="preview-perfil">
+      <button class="edit-photo" onclick="document.getElementById('input-foto').click();">
+        <i class="fas fa-edit"></i>
+      </button>
+      <input type="file" id="input-foto" accept="image/*" style="display:none;">
+    </div>
+
+    <div class="profile-info">
+      <p><strong>Nombre:</strong> Maria</p>
+      <p><strong>Apellidos:</strong> Vargas Zurita</p>
+      <p><strong>Correo:</strong> ejemplo@correo.com</p>
+      <p><strong>Teléfono:</strong> 0000000</p>
+    </div>
+  </div>
+
+  <!-- Bloque inferior: botón siempre abajo -->
+  <div class="profile-bottom">
+    <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+  </div>
+</aside>
+
+  </div>
+
+  <script src="script_postulantes.js"></script>
+</body>
+</html>
