@@ -13,7 +13,7 @@ if ($conn->connect_errno) {
 
 // Facultades y carreras
 $facultades = [
-    "Ingeniería" => ["Ingeniería de Sistemas", "Ingeniería Civil", "Ingeniería Mecánica", "Ingeniería Electrónica"],
+    "Tecnologia" => ["Ingeniería de Sistemas", "Ingeniería Civil", "Ingeniería Mecánica", "Ingeniería Electrónica"],
     "Medicina"   => ["Medicina", "Enfermería", "Odontología"],
     "Derecho"    => ["Derecho", "Criminología"],
     "Arquitectura" => ["Arquitectura", "Diseño Urbano"]

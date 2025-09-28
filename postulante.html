@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Postulante de Usuario</title>
+<title>Registro de Postulante</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/postulante.css">
 </head>
 <body>
 <div class="container">
-    <h2>Postulante de Nuevo Usuario</h2>
+    <h2>Registro de Nuevo Postulante</h2>
     <form action="postulante.php" method="POST" enctype="multipart/form-data" autocomplete="off">
         <label for="nombre_usuario">Nombre:</label>
         <input type="text" id="nombre_usuario" name="nombre_usuario" required maxlength="100" />
@@ -47,11 +47,9 @@
         <label for="facultad">Facultad:</label>
         <select id="facultad" name="facultad" required>
             <option value="">-- Seleccione una Facultad --</option>
-            <option value="ingenieria">Facultad de Tecnología</option>
-            <option value="economia">Facultad de Ciencias Económicas</option>
-            <option value="derecho">Facultad de Derecho</option>
-            <option value="medicina">Facultad de Medicina</option>
-            <option value="humanidades">Facultad de Humanidades</option>
+            <option value="1">Facultad de tecnologia</option>
+            <option value="2">Facultad de Medicina</option>
+            <option value="3">Facultad de Derecho</option>
         </select>
 
         <label for="carrera">Carrera:</label>
@@ -68,24 +66,15 @@
 
 <script>
 const carrerasPorFacultad = {
-    ingenieria: [
+    1: [
         { value: "1", text: "Ingeniería de Sistemas" },
-        { value: "2", text: "Ingeniería Civil" },
-        { value: "3", text: "Ingeniería Industrial" }
+        { value: "2", text: "Ingeniería Civil" }
     ],
-    economia: [
-        { value: "4", text: "Contaduría Pública" },
-        { value: "5", text: "Administración de Empresas" }
+    2: [
+        { value: "3", text: "Medicina" }
     ],
-    derecho: [
-        { value: "6", text: "Derecho" }
-    ],
-    medicina: [
-        { value: "7", text: "Medicina" }
-    ],
-    humanidades: [
-        { value: "8", text: "Psicología" },
-        { value: "9", text: "Comunicación Social" }
+    3: [
+        { value: "4", text: "Derecho" }
     ]
 };
 
