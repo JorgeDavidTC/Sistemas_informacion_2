@@ -39,7 +39,7 @@ if ($resultado->num_rows === 1) {
         if ($fila['rol'] === 'admin') {
             header("Location: administrador.php");
         } elseif ($fila['rol'] === 'personal_admision') {
-            header("Location: admision_dashboard.php");
+            header("Location: personal_admision.php");
         } else {
             header("Location: postulante_dashboard.php");
         }

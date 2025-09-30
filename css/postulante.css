@@ -1,0 +1,98 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #ABAFB5; /* Gris azulado del login */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #122E34; /* Verde oscuro */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #0E1D21; /* Gris oscuro */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #677E8A; /* Gris azulado */
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input[type="file"] {
+    border: none;
+    padding: 5px 0;
+    font-size: 14px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button[type="submit"] {
+    background: linear-gradient(45deg, #122E34, #0E1D21); /* Verde oscuro degradado */
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(45deg, #677E8A, #122E34);
+}
+
+button[type="button"] {
+    background-color: #622347; /* Vino */
+    color: white;
+}
+
+button[type="button"]:hover {
+    background-color: #8c305d;
+}

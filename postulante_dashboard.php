@@ -7,7 +7,7 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
-// Configuración de conexión a la base de datos admisiones_unificadas
+// Conexión a la base de datos
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
@@ -15,15 +15,13 @@ define('DB_NAME', 'admisiones_unificadas');
 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if ($conn->connect_errno) {
-    error_log("Error de conexión a BD: " . $conn->connect_error);
-    die("Error al conectar con la base de datos. Intente más tarde.");
+    die("Error al conectar con la base de datos: " . $conn->connect_error);
 }
 
 $id_usuario = (int) $_SESSION['id_usuario'];
 
-// Obtener datos de usuario
-$query = "SELECT nombre, correo_electronico, rol FROM usuarios WHERE id_usuario = ? LIMIT 1";
-$stmt = $conn->prepare($query);
+// Obtener datos del usuario
+$stmt = $conn->prepare("SELECT nombre, correo_electronico, rol FROM usuarios WHERE id_usuario = ?");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -34,26 +32,62 @@ if ($result->num_rows !== 1) {
 $usuario = $result->fetch_assoc();
 $stmt->close();
 
-// Determinar si es admin
+// Detectar si es admin
 $es_admin = ($usuario['rol'] === 'admin');
 
-// Obtener ranking de carreras directamente desde PHP
+// Obtener facultades para el selector
+$facultades = [];
+$res = $conn->query("SELECT id_facultad, nombre FROM facultades ORDER BY nombre");
+while ($f = $res->fetch_assoc()) {
+    $facultades[] = $f;
+}
+$res->free();
+
+// Detectar facultad seleccionada
+$selected_facultad_id = isset($_GET['facultad_id']) ? (int)$_GET['facultad_id'] : 0;
+
+// Ranking de carreras
 $ranking_data = [];
 $ranking_query = "
     SELECT c.nombre, COUNT(i.id_inscripcion) AS postulantes_count,
            ROUND(COUNT(i.id_inscripcion) / (SELECT COUNT(*) FROM inscripciones) * 100, 2) AS porcentaje_total
     FROM carreras c
     LEFT JOIN inscripciones i ON i.id_carrera = c.id_carrera
+";
+
+if ($selected_facultad_id > 0) {
+    $ranking_query .= " WHERE c.facultad_id = $selected_facultad_id";
+}
+
+$ranking_query .= "
     GROUP BY c.id_carrera, c.nombre
     ORDER BY postulantes_count DESC
     LIMIT 10
 ";
-if ($ranking_result = $conn->query($ranking_query)) {
-    while ($row = $ranking_result->fetch_assoc()) {
-        $ranking_data[] = $row;
-    }
-    $ranking_result->free();
+
+$res = $conn->query($ranking_query);
+while ($row = $res->fetch_assoc()) {
+    $ranking_data[] = $row;
 }
+$res->free();
+
+// Ranking de facultades
+$facultad_data = [];
+$facultad_query = "
+    SELECT f.nombre AS facultad, COUNT(i.id_inscripcion) AS postulantes_count,
+           ROUND(COUNT(i.id_inscripcion) / (SELECT COUNT(*) FROM inscripciones) * 100, 2) AS porcentaje_total
+    FROM facultades f
+    LEFT JOIN carreras c ON f.id_facultad = c.facultad_id
+    LEFT JOIN inscripciones i ON i.id_carrera = c.id_carrera
+    GROUP BY f.id_facultad, f.nombre
+    ORDER BY postulantes_count DESC
+    LIMIT 10
+";
+$res = $conn->query($facultad_query);
+while ($row = $res->fetch_assoc()) {
+    $facultad_data[] = $row;
+}
+$res->free();
 
 $conn->close();
 ?>
@@ -66,7 +100,6 @@ $conn->close();
 <title>Bienvenido, <?= htmlspecialchars($usuario['nombre']) ?></title>
 <link rel="stylesheet" href="css/principal.css" />
 <style>
-/* --- estilos básicos --- */
 header h1 { margin: 0; font-size: 1.8rem; }
 .header-right { display: flex; align-items: center; gap: 20px; }
 .username { font-weight: 600; font-size: 1rem; }
@@ -79,11 +112,12 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .nav-menu-content a { color: #ecf0f1; padding: 12px 16px; text-decoration: none; display: block; }
 .nav-menu-content a:hover { background-color:#c1b487; }
 .nav-menu:hover .nav-menu-content { display: block; }
-.btn-ranking { background-color: #5a4d3c; color: white; border: none; padding: 10px 20px; margin: 10px 0; border-radius: 5px; cursor: pointer; font-size: 1rem; }
-.btn-ranking:hover { background-color:rgb(102, 86, 64); }
 .ranking-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
 .ranking-table th, .ranking-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 .ranking-table th { background-color: #5a4d3c; color: white; }
+select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
+.btn-estadisticas { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 15px 0; font-weight: 600; }
+.btn-estadisticas:hover { background-color: #218838; }
 </style>
 </head>
 <body>
@@ -111,8 +145,49 @@ header h1 { margin: 0; font-size: 1.8rem; }
     <p>Email registrado: <?= htmlspecialchars($usuario['correo_electronico']) ?></p>
     <p>Rol: <?= $es_admin ? "Administrador" : "Postulante" ?></p>
 
-    <!-- Ranking de carreras -->
-    <h2>Top carreras más demandadas</h2>
+    <!-- Botón de Estadísticas -->
+    <a href="estadisticas.php">
+        <button class="btn-estadisticas">📊 Ver Estadísticas</button>
+    </a>
+
+    <!-- Ranking de facultades -->
+    <h2>Top Facultades más demandadas</h2>
+    <table class="ranking-table">
+        <thead>
+            <tr>
+                <th>Posición</th>
+                <th>Facultad</th>
+                <th>Postulantes</th>
+                <th>% del total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($facultad_data as $index => $f): ?>
+            <tr>
+                <td><?= $index + 1 ?></td>
+                <td><?= htmlspecialchars($f['facultad']) ?></td>
+                <td><?= $f['postulantes_count'] ?></td>
+                <td><?= $f['porcentaje_total'] ?>%</td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <!-- Selector de facultad -->
+    <h2>Ranking de carreras</h2>
+    <form method="get" action="">
+        <label for="facultad">Filtrar por Facultad:</label>
+        <select name="facultad_id" id="facultad" onchange="this.form.submit()">
+            <option value="0">-- Todas las Facultades --</option>
+            <?php foreach ($facultades as $f): ?>
+                <option value="<?= $f['id_facultad'] ?>" <?= $selected_facultad_id === (int)$f['id_facultad'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($f['nombre']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </form>
+
+    <!-- Tabla de carreras -->
     <table class="ranking-table">
         <thead>
             <tr>
@@ -123,16 +198,17 @@ header h1 { margin: 0; font-size: 1.8rem; }
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($ranking_data as $index => $carrera): ?>
+            <?php foreach ($ranking_data as $index => $c): ?>
             <tr>
                 <td><?= $index + 1 ?></td>
-                <td><?= htmlspecialchars($carrera['nombre']) ?></td>
-                <td><?= $carrera['postulantes_count'] ?></td>
-                <td><?= $carrera['porcentaje_total'] ?>%</td>
+                <td><?= htmlspecialchars($c['nombre']) ?></td>
+                <td><?= $c['postulantes_count'] ?></td>
+                <td><?= $c['porcentaje_total'] ?>%</td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
+
 </main>
 </body>
 </html>
