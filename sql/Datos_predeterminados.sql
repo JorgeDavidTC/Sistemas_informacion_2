@@ -117,6 +117,7 @@ INSERT INTO temas (id_temario, id_asignatura, titulo, contenido, orden, fecha_in
 (3, 6, 'Derecho Constitucional', 'Constitución Política del Estado', 1, '2025-01-12', '2025-02-12'),
 (3, 6, 'Derecho Civil', 'Personas, familia, sucesiones', 2, '2025-02-13', '2025-03-12');
 
+
 INSERT INTO notas_temas (id_postulante, id_tema, nota, fecha_realizacion) VALUES
 (1, 1, 85.00, '2025-03-01 09:00:00'),
 (1, 2, 92.50, '2025-03-08 09:00:00'),
@@ -134,7 +135,13 @@ INSERT INTO recursos (titulo, descripcion, archivo_url, tipo, permitir_descarga,
 ('Video Clases Física', 'Video clases de física básica', 'https://youtube.com/playlist/fisica', 'video', 0, 1, 1, 'activo', '2024-12-05'),
 ('Manual Biología Celular', 'Manual completo de biología celular', '/recursos/biologia_celular.pdf', 'libro', 1, 1, 4, 'activo', '2024-12-10'),
 ('Simulacro Examen Medicina', 'Examen simulado para medicina', '/recursos/simulacro_medicina.pdf', 'archivo', 1, 1, 4, 'activo', '2024-12-15'),
-('Guía Derecho Constitucional', 'Guía de derecho constitucional boliviano', '/recursos/derecho_constitucional.pdf', 'guia', 1, 1, 6, 'activo', '2024-12-08');
+('Guía Derecho Constitucional', 'Guía de derecho constitucional boliviano', '/recursos/derecho_constitucional.pdf', 'guia', 1, 1, 6, 'activo', '2024-12-08'),
+('Guía Oficial de Ingeniería', NULL, 'guias/guia_ingenieria.jpg', 'guia', 1, 1, 1, 'activo', '2025-09-29'),
+('Guía Oficial de Medicina', NULL, 'guias/guia_medicina.jpg', 'guia', 1, 1, 1, 'activo', '2025-09-29'),
+('Guía Oficial de Derecho', NULL, 'guias/guia_derecho.jpg', 'guia', 1, 1, 1, 'activo', '2025-09-29'),
+('Primer Examen de Ingreso FCyT 1-2005', NULL, 'examenes/050_ExamenAdmissionPrimerOpcion1-2005.pdf', 'archivo', 1, 1, 1, 'activo', '2005-01-15'),
+('Segundo Examen de Ingreso FCyT 1-2005', NULL, 'examenes/051_ExamenAdmissionSegundaOpcion1-2005.pdf', 'archivo', 1, 1, 1, 'activo', '2005-07-20'),
+('Primer Examen de Ingreso FCyT 2-2005', NULL, 'examenes/052_ExamenAdmissionPrimeraOpcion2-2005.pdf', 'archivo', 1, 1, 1, 'activo', '2005-08-10');
 
 INSERT INTO consultas_materiales (postulante_id, material_id, fecha_consulta, tipo_consulta) VALUES
 (1, 1, '2025-01-10 14:30:00', 'descarga'),
@@ -176,3 +183,5 @@ INSERT INTO bitacora (entidad, id_entidad, accion, usuario, detalles) VALUES
 ('documentos', '1', 'validate', 'roberto.silva@email.com', '{"estado": "aprobado", "comentario": "Documento claro"}'),
 ('pagos', '1', 'confirm', 'sistema', '{"monto": 150.00, "metodo": "transferencia"}'),
 ('notas', '1', 'register', 'sistema', '{"tema": "Álgebra Lineal", "nota": 85.00}');
+
+

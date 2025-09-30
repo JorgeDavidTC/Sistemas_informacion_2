@@ -426,9 +426,6 @@ try {
                 🔄 Actualizar Estadísticas
             </button>
             
-            <button class="btn btn-secondary" onclick="exportarPDF()">
-                📄 Exportar PDF
-            </button>
         </div>
         
         <!-- Estadísticas Generales -->
@@ -540,11 +537,7 @@ try {
                         <div class="stat-value">${totalInscripciones}</div>
                         <div class="stat-change">En todas las carreras</div>
                     </div>
-                    <div class="stat-card">
-                        <h3>Carreras con Postulantes</h3>
-                        <div class="stat-value">${parseInt(stats.carreras_con_postulantes) || 0}</div>
-                        <div class="stat-change">Con demanda</div>
-                    </div>
+                 
                     <div class="stat-card">
                         <h3>Promedio Puntaje</h3>
                         <div class="stat-value">${promedio.toFixed(2)}</div>
@@ -555,11 +548,7 @@ try {
                         <div class="stat-value">${totalAdmitidos}</div>
                         <div class="stat-change change-positive">${totalInscripciones ? ((totalAdmitidos / totalInscripciones) * 100).toFixed(1) + '%' : '0%'}</div>
                     </div>
-                    <div class="stat-card">
-                        <h3>Documentos Aprobados</h3>
-                        <div class="stat-value">${parseInt(stats.documentos_aprobados) || 0}</div>
-                        <div class="stat-change">${parseInt(stats.documentos_pendientes) || 0} pendientes</div>
-                    </div>
+                  
                 `;
                 
                 document.getElementById('statsGeneral').innerHTML = html;

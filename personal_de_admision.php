@@ -302,14 +302,22 @@ class DocumentoManager {
     
     public function validarDocumento($id_doc, $estado, $comentario = '') {
         try {
+            // Obtener información del usuario actual de la sesión
+            $usuario_id = $_SESSION['usuario']['id_usuario'] ?? null;
+            $usuario_nombre = $_SESSION['usuario']['nombre'] ?? 'Sistema';
+            
+            if (!$usuario_id) {
+                throw new Exception("Usuario no autenticado correctamente");
+            }
+            
             $query = "UPDATE documentos_postulantes SET estado_validacion = ?, personal_validador_id = ?, fecha_validacion = NOW(), comentario = ? WHERE id_doc = ?";
             $stmt = $this->conn->prepare($query);
-            $result = $stmt->execute([$estado, $_SESSION['usuario']['id_usuario'], $comentario, $id_doc]);
+            $result = $stmt->execute([$estado, $usuario_id, $comentario, $id_doc]);
             
             if ($result) {
                 // Obtener información del documento para la bitácora
                 $docInfo = $this->getDocumentoInfo($id_doc);
-                $this->registrarBitacora('documentos_postulantes', $id_doc, 'validar', $_SESSION['usuario']['nombre'], [
+                $this->registrarBitacora('documentos_postulantes', $id_doc, 'validar', $usuario_nombre, [
                     'postulante' => $docInfo['nombres'] . ' ' . $docInfo['apellido_paterno'],
                     'documento' => $docInfo['nombre_documento'] ?? $docInfo['tipo_documento'],
                     'estado' => $estado,
@@ -321,14 +329,14 @@ class DocumentoManager {
             }
             
             return $result;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             error_log("Error en validarDocumento: " . $e->getMessage());
             return false;
         }
     }
     
     private function getDocumentoInfo($id_doc) {
-        $query = "SELECT dp.*, p.nombres, p.apellido_paterno, dr.nombre_documento 
+        $query = "SELECT dp.*, p.nombres, p.apellido_paterno, p.id_postulante as postulante_id, dr.nombre_documento 
                  FROM documentos_postulantes dp
                  JOIN postulantes p ON dp.postulante_id = p.id_postulante
                  LEFT JOIN documentos_requeridos dr ON dp.documento_req_id = dr.id_documento_req
@@ -339,28 +347,38 @@ class DocumentoManager {
     }
     
     private function actualizarEstadoPostulante($postulante_id) {
-        // Contar documentos pendientes del postulante
-        $query = "SELECT COUNT(*) as pendientes 
-                 FROM documentos_postulantes 
-                 WHERE postulante_id = ? AND estado_validacion = 'pendiente'";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([$postulante_id]);
-        $pendientes = $stmt->fetch(PDO::FETCH_ASSOC)['pendientes'];
-        
-        if ($pendientes == 0) {
-            // Todos los documentos están revisados, verificar si hay rechazados
-            $query = "SELECT COUNT(*) as rechazados 
+        try {
+            // Contar documentos pendientes del postulante
+            $query = "SELECT COUNT(*) as pendientes 
                      FROM documentos_postulantes 
-                     WHERE postulante_id = ? AND estado_validacion = 'rechazado'";
+                     WHERE postulante_id = ? AND estado_validacion = 'pendiente'";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([$postulante_id]);
-            $rechazados = $stmt->fetch(PDO::FETCH_ASSOC)['rechazados'];
+            $pendientes = $stmt->fetch(PDO::FETCH_ASSOC)['pendientes'];
             
-            $nuevo_estado = $rechazados > 0 ? 'documentos_rechazados' : 'documentos_aprobados';
-            
-            $query = "UPDATE postulantes SET estado_postulacion = ? WHERE id_postulante = ?";
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute([$nuevo_estado, $postulante_id]);
+            if ($pendientes == 0) {
+                // Todos los documentos están revisados, verificar si hay rechazados
+                $query = "SELECT COUNT(*) as rechazados 
+                         FROM documentos_postulantes 
+                         WHERE postulante_id = ? AND estado_validacion = 'rechazado'";
+                $stmt = $this->conn->prepare($query);
+                $stmt->execute([$postulante_id]);
+                $rechazados = $stmt->fetch(PDO::FETCH_ASSOC)['rechazados'];
+                
+                $nuevo_estado = $rechazados > 0 ? 'documentos_rechazados' : 'documentos_aprobados';
+                
+                $query = "UPDATE postulantes SET estado_postulacion = ? WHERE id_postulante = ?";
+                $stmt = $this->conn->prepare($query);
+                $stmt->execute([$nuevo_estado, $postulante_id]);
+                
+                // Registrar en bitácora
+                $this->registrarBitacora('postulantes', $postulante_id, 'actualizar_estado', $_SESSION['usuario']['nombre'] ?? 'Sistema', [
+                    'nuevo_estado' => $nuevo_estado,
+                    'razon' => 'validacion_documentos'
+                ]);
+            }
+        } catch (PDOException $e) {
+            error_log("Error en actualizarEstadoPostulante: " . $e->getMessage());
         }
     }
     
@@ -1129,6 +1147,7 @@ try {
                                     <td>
                                         <div class="acciones-grupo">
                                             <button class="btn-ver" data-id="<?php echo $postulante['id_postulante']; ?>" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                                            <button class="btn-editar" data-id="<?php echo $postulante['id_postulante']; ?>" title="Editar"><i class="fas fa-edit"></i></button>
                                             <button class="btn-eliminar" data-id="<?php echo $postulante['id_postulante']; ?>" title="Eliminar"><i class="fas fa-trash"></i></button>
                                         </div>
                                     </td>
@@ -1199,7 +1218,7 @@ try {
                                                 <button class="btn-validar btn-danger" data-id="<?php echo $documento['id_doc']; ?>" data-estado="rechazado" title="Rechazar documento"><i class="fas fa-times"></i></button>
                                             <?php endif; ?>
                                             <?php if (!empty($documento['archivo_url'])): ?>
-                                                
+                                                <button class="btn-ver-doc btn-info" data-url="<?php echo htmlspecialchars($documento['archivo_url']); ?>" title="Ver documento"><i class="fas fa-eye"></i></button>
                                             <?php endif; ?>
                                             <?php if (!empty($documento['comentario'])): ?>
                                                 <button class="btn-ver-comentario" data-comentario="<?php echo htmlspecialchars($documento['comentario']); ?>" title="Ver comentario"><i class="fas fa-comment"></i></button>
@@ -1390,68 +1409,6 @@ try {
                     </table>
                 </div>
             </section>
-
-            <!-- Sección Reportes -->
-            <section id="reportes" class="seccion-contenido">
-                <h2><i class="fas fa-chart-pie"></i> Reportes y Estadísticas</h2>
-                
-                <div class="controles-reportes">
-                    <div class="filtros-reportes">
-                        <div class="filtro-grupo">
-                            <label for="fecha-inicio">Fecha Inicio:</label>
-                            <input type="date" id="fecha-inicio" name="fecha_inicio">
-                        </div>
-                        <div class="filtro-grupo">
-                            <label for="fecha-fin">Fecha Fin:</label>
-                            <input type="date" id="fecha-fin" name="fecha_fin">
-                        </div>
-                        <div class="filtro-grupo">
-                            <label for="carrera-reporte">Carrera:</label>
-                            <select id="carrera-reporte" name="carrera_reporte">
-                                <option value="todas">Todas las carreras</option>
-                                <?php foreach ($carreras as $carrera): ?>
-                                <option value="<?php echo $carrera['id_carrera']; ?>"><?php echo htmlspecialchars($carrera['nombre']); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <button type="button" id="btn-generar-reporte" class="btn-primary"><i class="fas fa-chart-line"></i> Generar Reporte</button>
-                    </div>
-                </div>
-
-                <div class="reportes-contenedor">
-                    <div class="reporte-tarjetas">
-                        <div class="reporte-tarjeta">
-                            <h3>Inscripciones por Periodo</h3>
-                            <canvas id="grafico-inscripciones-periodo"></canvas>
-                        </div>
-                        <div class="reporte-tarjeta">
-                            <h3>Resultados por Carrera</h3>
-                            <canvas id="grafico-resultados-carrera"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="reporte-tablas">
-                        <div class="tabla-reporte">
-                            <h3>Top 10 Carreras con Más Postulantes</h3>
-                            <div class="tabla-contenedor">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Carrera</th>
-                                            <th>Postulantes</th>
-                                            <th>Aprobados</th>
-                                            <th>Tasa de Aprobación</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cuerpo-top-carreras">
-                                        <!-- Datos generados por JavaScript -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </main>
     </div>
 
@@ -1583,7 +1540,9 @@ try {
 
             // Cerrar sesión
             document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
-             argumentswindow.location.href = 'login.html';
+                if (confirm('¿Está seguro de que desea cerrar sesión?')) {
+                    window.location.href = 'login.html';
+                }
             });
         }
     </script>
