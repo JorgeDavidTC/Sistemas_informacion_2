@@ -7,7 +7,7 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
-
+// Conexión a la base de datos
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
@@ -20,7 +20,7 @@ if ($conn->connect_errno) {
 
 $id_usuario = (int) $_SESSION['id_usuario'];
 
-
+// Obtener datos del usuario
 $stmt = $conn->prepare("SELECT nombre, correo_electronico, rol FROM usuarios WHERE id_usuario = ?");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
@@ -32,10 +32,10 @@ if ($result->num_rows !== 1) {
 $usuario = $result->fetch_assoc();
 $stmt->close();
 
-
+// Detectar si es admin
 $es_admin = ($usuario['rol'] === 'admin');
 
-
+// Obtener facultades para el selector
 $facultades = [];
 $res = $conn->query("SELECT id_facultad, nombre FROM facultades ORDER BY nombre");
 while ($f = $res->fetch_assoc()) {
@@ -43,28 +43,10 @@ while ($f = $res->fetch_assoc()) {
 }
 $res->free();
 
-
+// Detectar facultad seleccionada
 $selected_facultad_id = isset($_GET['facultad_id']) ? (int)$_GET['facultad_id'] : 0;
 
-
-$selected_facultad_guia_id = isset($_GET['facultad_guia_id']) ? (int)$_GET['facultad_guia_id'] : 0;
-
-$guia_oficial = null;
-if ($selected_facultad_guia_id > 0) {
-    $guia_query = "
-        SELECT archivo_url 
-        FROM recursos 
-        WHERE tipo = 'guia' AND facultad_id = $selected_facultad_guia_id 
-        LIMIT 1
-    ";
-    $res = $conn->query($guia_query);
-    if ($res->num_rows > 0) {
-        $guia_oficial = $res->fetch_assoc();
-    }
-}
-$archivo_url = ($guia_oficial && !empty($guia_oficial['archivo_url'])) ? $guia_oficial['archivo_url'] : null;
-$extension = strtolower(pathinfo($archivo_url ?? '', PATHINFO_EXTENSION));
-
+// Ranking de carreras
 $ranking_data = [];
 $ranking_query = "
     SELECT c.nombre, COUNT(i.id_inscripcion) AS postulantes_count,
@@ -89,6 +71,7 @@ while ($row = $res->fetch_assoc()) {
 }
 $res->free();
 
+// Ranking de facultades
 $facultad_data = [];
 $facultad_query = "
     SELECT f.nombre AS facultad, COUNT(i.id_inscripcion) AS postulantes_count,
@@ -133,6 +116,8 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .ranking-table th, .ranking-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 .ranking-table th { background-color: #5a4d3c; color: white; }
 select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
+.btn-estadisticas { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 15px 0; font-weight: 600; }
+.btn-estadisticas:hover { background-color: #218838; }
 </style>
 </head>
 <body>
@@ -160,6 +145,11 @@ select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
     <p>Email registrado: <?= htmlspecialchars($usuario['correo_electronico']) ?></p>
     <p>Rol: <?= $es_admin ? "Administrador" : "Postulante" ?></p>
 
+    <!-- Botón de Estadísticas -->
+    <a href="estadisticas.php">
+        <button class="btn-estadisticas">📊 Ver Estadísticas</button>
+    </a>
+
     <!-- Ranking de facultades -->
     <h2>Top Facultades más demandadas</h2>
     <table class="ranking-table">
@@ -183,7 +173,7 @@ select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
         </tbody>
     </table>
 
-
+    <!-- Selector de facultad -->
     <h2>Ranking de carreras</h2>
     <form method="get" action="">
         <label for="facultad">Filtrar por Facultad:</label>
@@ -197,7 +187,7 @@ select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
         </select>
     </form>
 
-    
+    <!-- Tabla de carreras -->
     <table class="ranking-table">
         <thead>
             <tr>
@@ -218,32 +208,6 @@ select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
             <?php endforeach; ?>
         </tbody>
     </table>
-
-    <h2>Guía oficial</h2>
-    <form method="get" action="">
-        <label for="facultad_guia">Filtrar por Facultad:</label>
-        <select name="facultad_guia_id" id="facultad_guia" onchange="this.form.submit()">
-            <option value="0">-- Todas las Facultades --</option>
-            <?php foreach ($facultades as $f): ?>
-                <option value="<?= $f['id_facultad'] ?>" <?= $selected_facultad_guia_id === (int)$f['id_facultad'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($f['nombre']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <input type="hidden" name="facultad_id" value="<?= $selected_facultad_id ?>">
-    </form>
-
-    <?php if ($archivo_url && in_array($extension, ['jpg','jpeg','png','gif'])): ?>
-        <div style="text-align:center; margin-top:20px;">
-            <img src="<?= htmlspecialchars($archivo_url) ?>" 
-                 style="max-width:100%; height:auto; border:none;">
-            <p style="color:#666; margin-top:5px;">Guía: <?= htmlspecialchars(basename($archivo_url)) ?></p>
-        </div>
-    <?php elseif ($archivo_url): ?>
-        <p>Este recurso no es una imagen: <?= htmlspecialchars($archivo_url) ?></p>
-    <?php else: ?>
-        <p>No hay guía disponible para esta facultad.</p>
-    <?php endif; ?>
 
 </main>
 </body>
