@@ -18,7 +18,7 @@ try {
         $apellido_materno = trim($_POST['apellido_materno']);
         $ci = trim($_POST['ci']);
         $email = trim($_POST['email']);
-        $contrasena = $_POST['contrasena']; // texto plano
+        $contrasena = $_POST['contrasena']; 
         $telefono = trim($_POST['telefono']);
         $fecha_nacimiento = $_POST['fecha_nacimiento'];
         $direccion_residencia = trim($_POST['direccion_residencia']);
@@ -29,12 +29,22 @@ try {
         // -----------------------------
         // Validaciones básicas
         // -----------------------------
-        if (empty($nombre_usuario) || empty($ci) || empty($email) || empty($telefono) || empty($fecha_nacimiento) || empty($direccion_residencia) || empty($nacionalidad) || empty($facultad_id) || empty($carrera_id)) {
+        if (empty($nombre_usuario) || empty($apellido_paterno) || empty($apellido_materno) || empty($ci) || empty($email) || empty($telefono) || empty($fecha_nacimiento) || empty($direccion_residencia) || empty($nacionalidad) || empty($facultad_id) || empty($carrera_id)) {
             throw new Exception("Todos los campos son obligatorios.");
         }
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new Exception("Correo inválido");
-        if (!preg_match('/^[0-9]{5,15}$/', $ci)) throw new Exception("CI inválido");
-        if (!preg_match('/^[0-9]{7,15}$/', $telefono)) throw new Exception("Teléfono inválido");
+
+        // Nombre y apellidos solo letras y espacios
+        if (!preg_match('/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/u', $nombre_usuario)) throw new Exception("El nombre solo debe contener letras.");
+        if (!preg_match('/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/u', $apellido_paterno)) throw new Exception("El apellido paterno solo debe contener letras.");
+        if (!preg_match('/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/u', $apellido_materno)) throw new Exception("El apellido materno solo debe contener letras.");
+
+        // Teléfono exactamente 8 dígitos
+        if (!preg_match('/^[0-9]{8}$/', $telefono)) throw new Exception("El teléfono debe contener exactamente 8 dígitos.");
+
+        // CI exactamente 8 caracteres alfanuméricos
+        if (!preg_match('/^[A-Za-z0-9]{8}$/', $ci)) throw new Exception("El CI debe tener exactamente 8 caracteres, solo letras y números.");
 
         // -----------------------------
         // Validar que carrera pertenezca a facultad

@@ -116,6 +116,8 @@ header h1 { margin: 0; font-size: 1.8rem; }
 .ranking-table th, .ranking-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 .ranking-table th { background-color: #5a4d3c; color: white; }
 select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
+.btn-estadisticas { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 15px 0; font-weight: 600; }
+.btn-estadisticas:hover { background-color: #218838; }
 </style>
 </head>
 <body>
@@ -142,6 +144,11 @@ select { padding: 5px 10px; margin: 10px 0; border-radius: 5px; }
     <h2>Bienvenido al sistema de admisiones</h2>
     <p>Email registrado: <?= htmlspecialchars($usuario['correo_electronico']) ?></p>
     <p>Rol: <?= $es_admin ? "Administrador" : "Postulante" ?></p>
+
+    <!-- Botón de Estadísticas -->
+    <a href="estadisticas.php">
+        <button class="btn-estadisticas">📊 Ver Estadísticas</button>
+    </a>
 
     <!-- Ranking de facultades -->
     <h2>Top Facultades más demandadas</h2>
