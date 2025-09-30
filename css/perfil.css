@@ -1,0 +1,429 @@
+/* Estilos Elegantes para Perfil de Usuario */
+
+/* Fuente general y reset mejorado */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+/* Fondo con gradiente mejorado */
+body {
+  background: linear-gradient(135deg, 
+    #122E34 0%, 
+    #0E1D21 25%, 
+    #1A3A42 50%, 
+    #0E1D21 75%, 
+    #122E34 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #E1E8ED;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Contenedor principal elegante */
+.container {
+  max-width: 800px;
+  width: 100%;
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.12) 0%, 
+    rgba(248, 250, 252, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 50px 40px;
+  box-shadow: 
+    0 25px 50px rgba(18, 46, 52, 0.4),
+    0 15px 35px rgba(18, 46, 52, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de brillo sutil */
+.container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: rotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Encabezado elegante */
+h1 {
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #E1E8ED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(135deg, #122E34 0%, #1A4A54 100%);
+  border-radius: 2px;
+}
+
+/* Sección de foto de perfil */
+.profile-picture-section {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.profile-picture-container {
+  display: inline-block;
+  position: relative;
+  border-radius: 50%;
+  padding: 8px;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.2) 0%, 
+    rgba(255, 255, 255, 0.1) 100%);
+  box-shadow: 
+    0 8px 25px rgba(18, 46, 52, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.profile-picture {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(18, 46, 52, 0.4);
+}
+
+.profile-picture:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 15px 40px rgba(18, 46, 52, 0.5),
+    0 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+/* Grid de información elegante */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.profile-card {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.08) 0%, 
+    rgba(248, 250, 252, 0.05) 100%);
+  padding: 25px;
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.05), 
+    transparent);
+  transition: left 0.6s;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 15px 35px rgba(18, 46, 52, 0.4),
+    0 5px 15px rgba(18, 46, 52, 0.3);
+}
+
+.profile-card:hover::before {
+  left: 100%;
+}
+
+.profile-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #E1E8ED 0%, #B8C5CC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Elementos de información */
+.info-item {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #122E34 0%, #1A4A54 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: #E1E8ED;
+}
+
+.info-label {
+  font-weight: 600;
+  min-width: 120px;
+  background: linear-gradient(135deg, #E1E8ED 0%, #B8C5CC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 0.95rem;
+}
+
+.info-value {
+  flex: 1;
+  color: #E1E8ED;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* Sección académica destacada */
+.academic-section {
+  background: linear-gradient(135deg, 
+    rgba(26, 74, 84, 0.3) 0%, 
+    rgba(18, 46, 52, 0.2) 100%);
+  padding: 30px;
+  border-radius: 18px;
+  margin: 30px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.academic-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #122E34 0%, #1A4A54 100%);
+}
+
+.academic-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #E1E8ED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.academic-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* Botón elegante */
+.btn-back {
+  background: linear-gradient(135deg, 
+    #122E34 0%, 
+    #1A4A54 25%, 
+    #122E34 50%, 
+    #0E1D21 75%, 
+    #122E34 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 20px rgba(18, 46, 52, 0.4),
+    0 3px 10px rgba(18, 46, 52, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin: 40px auto 0;
+  min-width: 200px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-back::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.6s;
+}
+
+.btn-back:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 10px 25px rgba(18, 46, 52, 0.5),
+    0 5px 15px rgba(18, 46, 52, 0.4);
+}
+
+.btn-back:hover::before {
+  left: 100%;
+}
+
+.btn-back:active {
+  transform: translateY(-1px);
+}
+
+/* Estados vacíos o no asignados */
+.info-value:empty::before,
+.info-value:contains("No asignada")::before,
+.info-value:contains("No asignado")::before {
+  content: "No especificado";
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding: 20px 15px;
+  }
+  
+  .container {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+  }
+  
+  .profile-picture {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .profile-card {
+    padding: 20px;
+  }
+  
+  .academic-section {
+    padding: 25px 20px;
+  }
+  
+  .academic-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .info-label {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 25px 15px;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  .profile-picture {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .btn-back {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Animaciones de entrada */
+.profile-card, .academic-section, .profile-picture-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos de brillo en hover para elementos interactivos */
+.profile-card:hover, .btn-back:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.12) 0%, 
+    rgba(248, 250, 252, 0.1) 100%);
+}

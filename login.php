@@ -39,7 +39,7 @@ if ($resultado->num_rows === 1) {
         if ($fila['rol'] === 'personal_admision') {
             header("Location: personal_de_admision.php");
         } elseif ($fila['rol'] === 'postulante') {
-            header("Location: postulante.php");
+            header("Location: postulante_dashboard.php");
         } else {
             // Si el rol no es uno de los permitidos
             echo "<script>alert('Rol de usuario no válido'); window.history.back();</script>";

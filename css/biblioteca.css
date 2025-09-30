@@ -1,127 +1,422 @@
-/* Fondo degradado */
+/* Fuente general y reset mejorado */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Fondo con gradiente mejorado */
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #677E8A, #ABAFB5);
+  background: linear-gradient(135deg, 
+    #122E34 0%, 
+    #0E1D21 25%, 
+    #1A3A42 50%, 
+    #0E1D21 75%, 
+    #122E34 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
-/* Encabezado */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Encabezado mejorado */
 header {
-  background: #122E34;
+  background: linear-gradient(135deg, #122E34 0%, #0E1D21 100%);
   color: #E0B4B2;
-  padding: 20px;
+  padding: 25px 20px;
   text-align: center;
-  font-size: 1.8em;
-  letter-spacing: 2px;
-  font-weight: 600;
+  font-size: 2.2rem;
+  letter-spacing: 3px;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Área principal */
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(224, 180, 178, 0.1), 
+    transparent);
+  transition: left 0.6s;
+}
+
+header:hover::before {
+  left: 100%;
+}
+
+/* Área principal mejorada */
 main {
   flex: 1;
-  padding: 30px;
-  max-width: 1100px;
+  padding: 40px 30px;
+  max-width: 1200px;
   margin: auto;
+  width: 100%;
+  animation: fadeInUp 0.8s ease-out;
 }
 
-/* Formulario */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Formulario mejorado */
 form {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 20px;
+  margin-bottom: 40px;
   flex-wrap: wrap;
-}
-select, button {
-  padding: 12px 15px;
-  border-radius: 8px;
-  border: none;
-  font-size: 1em;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-select {
-  background: #ABAFB5;
-  color: #0E1D21;
-}
-button {
-  background: #622347;
-  color: #E0B4B2;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-}
-button:hover {
-  background: #0E1D21;
-  transform: translateY(-2px);
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(248, 250, 252, 0.9) 100%);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(18, 46, 52, 0.2),
+    0 5px 20px rgba(18, 46, 52, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideInDown 0.6s ease-out;
 }
 
-/* Mensajes */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+select, button {
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+select {
+  background: linear-gradient(135deg, #ABAFB5 0%, #8A8F95 100%);
+  color: #0E1D21;
+  min-width: 200px;
+  cursor: pointer;
+}
+
+select:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(98, 35, 71, 0.3);
+}
+
+button {
+  background: linear-gradient(135deg, 
+    #622347 0%, 
+    #7A2C4E 25%, 
+    #622347 50%, 
+    #4A1B36 75%, 
+    #622347 100%);
+  color: #E0B4B2;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(224, 180, 178, 0.2), 
+    transparent);
+  transition: left 0.6s;
+}
+
+button:hover {
+  background: linear-gradient(135deg, 
+    #7A2C4E 0%, 
+    #93355A 25%, 
+    #7A2C4E 50%, 
+    #622347 75%, 
+    #7A2C4E 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(98, 35, 71, 0.4);
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+/* Mensajes mejorados */
 .msg {
   grid-column: 1 / -1;
   text-align: center;
   color: #122E34;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, #E0B4B2 0%, #D4A6A4 100%);
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(18, 46, 52, 0.15);
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Grid y Cards mejorados */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.card {
+  background: linear-gradient(145deg, 
+    #E0B4B2 0%, 
+    #D4A6A4 100%);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(135deg, #622347 0%, #7A2C4E 100%);
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.card h3 {
+  margin: 0 0 15px;
+  color: #0E1D21;
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0E1D21 0%, #122E34 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card p {
+  font-size: 1rem;
+  color: #122E34;
+  line-height: 1.6;
+  margin-bottom: 15px;
   font-weight: 500;
 }
 
-/* Cards */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-.card {
-  background: #E0B4B2;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-}
-.card h3 {
-  margin: 0 0 10px;
-  color: #0E1D21;
-}
-.card p {
-  font-size: 0.9em;
-  color: #122E34;
-}
 .card a {
-  display: inline-block;
-  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
   text-decoration: none;
-  background: #122E34;
+  background: linear-gradient(135deg, #122E34 0%, #1A4A54 100%);
   color: #E0B4B2;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background 0.3s;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(18, 46, 52, 0.3);
+  position: relative;
+  overflow: hidden;
 }
+
+.card a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(224, 180, 178, 0.2), 
+    transparent);
+  transition: left 0.5s;
+}
+
 .card a:hover {
-  background: #0E1D21;
+  background: linear-gradient(135deg, #0E1D21 0%, #122E34 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(18, 46, 52, 0.4);
 }
 
-/* Botón volver */
+.card a:hover::before {
+  left: 100%;
+}
+
+/* Botón volver mejorado */
 .volver {
-  margin-top: 30px;
+  margin-top: 40px;
   text-align: center;
-}
-.volver button {
-  background: #122E34;
-  color: #E0B4B2;
-}
-.volver button:hover {
-  background: #0E1D21;
+  animation: fadeIn 0.8s ease-out 0.4s both;
 }
 
-/* Footer */
+.volver button {
+  background: linear-gradient(135deg, 
+    #122E34 0%, 
+    #1A4A54 25%, 
+    #122E34 50%, 
+    #0E1D21 75%, 
+    #122E34 100%);
+  color: #E0B4B2;
+  padding: 16px 30px;
+  font-size: 1.1rem;
+}
+
+.volver button:hover {
+  background: linear-gradient(135deg, 
+    #1A4A54 0%, 
+    #225A64 25%, 
+    #1A4A54 50%, 
+    #122E34 75%, 
+    #1A4A54 100%);
+}
+
+/* Footer mejorado */
 footer {
-  background: #0E1D21;
+  background: linear-gradient(135deg, #0E1D21 0%, #122E34 100%);
   color: #ABAFB5;
   text-align: center;
-  padding: 12px;
-  font-size: 0.9em;
+  padding: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header {
+    font-size: 1.8rem;
+    padding: 20px 15px;
+  }
+  
+  main {
+    padding: 25px 15px;
+  }
+  
+  form {
+    padding: 20px;
+    gap: 15px;
+  }
+  
+  select, button {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+  
+  main {
+    padding: 20px 10px;
+  }
+  
+  form {
+    padding: 15px;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Estados de carga y efectos adicionales */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.card.fade-in {
+  animation: cardFadeIn 0.6s ease-out;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

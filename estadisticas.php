@@ -20,7 +20,7 @@ class EstadisticasManager {
                     COUNT(DISTINCT p.id_postulante) as total_postulantes,
                     COUNT(DISTINCT i.id_carrera) as carreras_con_postulantes,
                     COUNT(DISTINCT i.id_inscripcion) as total_inscripciones,
-                    AVG(i.puntaje_examen) as promedio_puntaje,
+                    COALESCE(CAST(AVG(i.puntaje_examen) AS DECIMAL(10,2)), 0) as promedio_puntaje,
                     COUNT(DISTINCT CASE WHEN i.estado_inscripcion = 'admitido' THEN i.id_inscripcion END) as total_admitidos,
                     COUNT(DISTINCT CASE WHEN i.estado_inscripcion = 'no_admitido' THEN i.id_inscripcion END) as total_no_admitidos,
                     COUNT(DISTINCT CASE WHEN dp.estado_validacion = 'aprobado' THEN dp.id_doc END) as documentos_aprobados,
@@ -33,7 +33,31 @@ class EstadisticasManager {
             
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Asegurar que los valores numéricos sean números
+            if ($result) {
+                $result['promedio_puntaje'] = floatval($result['promedio_puntaje']);
+                $result['total_postulantes'] = intval($result['total_postulantes']);
+                $result['carreras_con_postulantes'] = intval($result['carreras_con_postulantes']);
+                $result['total_inscripciones'] = intval($result['total_inscripciones']);
+                $result['total_admitidos'] = intval($result['total_admitidos']);
+                $result['total_no_admitidos'] = intval($result['total_no_admitidos']);
+                $result['documentos_aprobados'] = intval($result['documentos_aprobados']);
+                $result['documentos_pendientes'] = intval($result['documentos_pendientes']);
+            }
+            
+            return $result ?: [
+                'total_postulantes' => 0,
+                'carreras_con_postulantes' => 0,
+                'total_inscripciones' => 0,
+                'promedio_puntaje' => 0,
+                'total_admitidos' => 0,
+                'total_no_admitidos' => 0,
+                'documentos_aprobados' => 0,
+                'documentos_pendientes' => 0
+            ];
+            
         } catch (PDOException $e) {
             error_log("Error en getEstadisticasGenerales: " . $e->getMessage());
             return ['error' => 'Error al obtener estadísticas generales'];
@@ -54,14 +78,18 @@ class EstadisticasManager {
                     COUNT(i.id_inscripcion) as total_inscripciones,
                     COUNT(CASE WHEN i.estado_inscripcion = 'admitido' THEN 1 END) as admitidos,
                     COUNT(CASE WHEN i.estado_inscripcion = 'no_admitido' THEN 1 END) as no_admitidos,
-                    AVG(i.puntaje_examen) as promedio_puntaje,
+                    COALESCE(CAST(AVG(i.puntaje_examen) AS DECIMAL(10,2)), 0) as promedio_puntaje,
                     c.cupos,
-                    ROUND((COUNT(i.id_inscripcion) / NULLIF(c.cupos, 0)) * 100, 2) as porcentaje_demanda
+                    CASE 
+                        WHEN c.cupos > 0 THEN ROUND((COUNT(i.id_inscripcion) / c.cupos) * 100, 2)
+                        ELSE 0 
+                    END as porcentaje_demanda
                 FROM carreras c
                 LEFT JOIN facultades f ON c.facultad_id = f.id_facultad
                 LEFT JOIN inscripciones i ON c.id_carrera = i.id_carrera
                 $where_periodo
                 GROUP BY c.id_carrera, c.nombre, c.codigo, f.nombre, c.cupos
+                HAVING total_inscripciones > 0
                 ORDER BY total_inscripciones DESC
                 LIMIT :limit
             ";
@@ -72,7 +100,19 @@ class EstadisticasManager {
             }
             $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Convertir valores numéricos
+            foreach ($results as &$row) {
+                $row['promedio_puntaje'] = floatval($row['promedio_puntaje']);
+                $row['total_inscripciones'] = intval($row['total_inscripciones']);
+                $row['admitidos'] = intval($row['admitidos']);
+                $row['no_admitidos'] = intval($row['no_admitidos']);
+                $row['porcentaje_demanda'] = floatval($row['porcentaje_demanda']);
+            }
+            
+            return $results;
+            
         } catch (PDOException $e) {
             error_log("Error en getCarrerasMasDemandadas: " . $e->getMessage());
             return ['error' => 'Error al obtener carreras demandadas'];
@@ -101,7 +141,17 @@ class EstadisticasManager {
             
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Convertir valores numéricos
+            foreach ($results as &$row) {
+                $row['total_inscripciones'] = intval($row['total_inscripciones']);
+                $row['postulantes_unicos'] = intval($row['postulantes_unicos']);
+                $row['admitidos'] = intval($row['admitidos']);
+            }
+            
+            return $results;
+            
         } catch (PDOException $e) {
             error_log("Error en getEvolucionPostulaciones: " . $e->getMessage());
             return ['error' => 'Error al obtener evolución de postulaciones'];
@@ -122,20 +172,37 @@ class EstadisticasManager {
                     COUNT(DISTINCT i.id_inscripcion) as total_inscripciones,
                     COUNT(DISTINCT i.id_postulante) as postulantes_unicos,
                     COUNT(CASE WHEN i.estado_inscripcion = 'admitido' THEN 1 END) as admitidos,
-                    AVG(i.puntaje_examen) as promedio_puntaje,
-                    SUM(c.cupos) as total_cupos,
-                    ROUND((COUNT(DISTINCT i.id_inscripcion) / NULLIF(SUM(c.cupos), 0)) * 100, 2) as porcentaje_demanda
+                    COALESCE(CAST(AVG(i.puntaje_examen) AS DECIMAL(10,2)), 0) as promedio_puntaje,
+                    COALESCE(SUM(c.cupos), 0) as total_cupos,
+                    CASE 
+                        WHEN SUM(c.cupos) > 0 THEN ROUND((COUNT(DISTINCT i.id_inscripcion) / SUM(c.cupos)) * 100, 2)
+                        ELSE 0 
+                    END as porcentaje_demanda
                 FROM facultades f
                 LEFT JOIN carreras c ON f.id_facultad = c.facultad_id
                 LEFT JOIN inscripciones i ON c.id_carrera = i.id_carrera
                 $where_periodo
                 GROUP BY f.id_facultad, f.nombre, f.codigo
+                HAVING total_inscripciones > 0
                 ORDER BY total_inscripciones DESC
             ";
             
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Convertir valores numéricos
+            foreach ($results as &$row) {
+                $row['promedio_puntaje'] = floatval($row['promedio_puntaje']);
+                $row['total_inscripciones'] = intval($row['total_inscripciones']);
+                $row['postulantes_unicos'] = intval($row['postulantes_unicos']);
+                $row['admitidos'] = intval($row['admitidos']);
+                $row['total_cupos'] = intval($row['total_cupos']);
+                $row['porcentaje_demanda'] = floatval($row['porcentaje_demanda']);
+            }
+            
+            return $results;
+            
         } catch (PDOException $e) {
             error_log("Error en getEstadisticasPorFacultad: " . $e->getMessage());
             return ['error' => 'Error al obtener estadísticas por facultad'];
@@ -186,7 +253,16 @@ class EstadisticasManager {
             $params[':total'] = $total;
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Convertir valores numéricos
+            foreach ($results as &$row) {
+                $row['cantidad_postulantes'] = intval($row['cantidad_postulantes']);
+                $row['porcentaje'] = floatval($row['porcentaje']);
+            }
+            
+            return $results;
+            
         } catch (PDOException $e) {
             error_log("Error en getDistribucionPuntajes: " . $e->getMessage());
             return ['error' => 'Error al obtener distribución de puntajes'];
@@ -294,282 +370,18 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas de Admisión - Sistema Universitario</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f6fa;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .controls {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: end;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        select, button {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e1e5e9;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card h3 {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .stat-change {
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .change-positive {
-            color: #28a745;
-        }
-
-        .charts-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .chart-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .chart-card h3 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 1.2rem;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e1e5e9;
-        }
-
-        .data-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .data-table tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #28a745, #20c997);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #f5c6cb;
-            text-align: center;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .chart-card {
-                padding: 15px;
-            }
-            
-            .container {
-                padding: 10px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/estadisticas.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Panel de Estadísticas de Admisión</h1>
+            <div class="header-top">
+                <h1>📊 Panel de Estadísticas de Admisión</h1>
+                <button class="btn btn-secondary" onclick="volverAlLogin()">
+                    ← Volver al Login
+                </button>
+            </div>
             <p>Análisis completo del proceso de admisión universitaria</p>
         </div>
         
@@ -711,36 +523,42 @@ try {
                 }
                 
                 const stats = data;
+                
+                // Asegurar que los valores sean números
+                const promedio = parseFloat(stats.promedio_puntaje) || 0;
+                const totalInscripciones = parseInt(stats.total_inscripciones) || 0;
+                const totalAdmitidos = parseInt(stats.total_admitidos) || 0;
+                
                 const html = `
                     <div class="stat-card">
                         <h3>Total Postulantes</h3>
-                        <div class="stat-value">${stats.total_postulantes || 0}</div>
+                        <div class="stat-value">${parseInt(stats.total_postulantes) || 0}</div>
                         <div class="stat-change change-positive">Únicos registrados</div>
                     </div>
                     <div class="stat-card">
                         <h3>Total Inscripciones</h3>
-                        <div class="stat-value">${stats.total_inscripciones || 0}</div>
+                        <div class="stat-value">${totalInscripciones}</div>
                         <div class="stat-change">En todas las carreras</div>
                     </div>
                     <div class="stat-card">
                         <h3>Carreras con Postulantes</h3>
-                        <div class="stat-value">${stats.carreras_con_postulantes || 0}</div>
+                        <div class="stat-value">${parseInt(stats.carreras_con_postulantes) || 0}</div>
                         <div class="stat-change">Con demanda</div>
                     </div>
                     <div class="stat-card">
                         <h3>Promedio Puntaje</h3>
-                        <div class="stat-value">${stats.promedio_puntaje ? stats.promedio_puntaje.toFixed(2) : '0.00'}</div>
+                        <div class="stat-value">${promedio.toFixed(2)}</div>
                         <div class="stat-change">Puntaje general</div>
                     </div>
                     <div class="stat-card">
                         <h3>Admitidos</h3>
-                        <div class="stat-value">${stats.total_admitidos || 0}</div>
-                        <div class="stat-change change-positive">${stats.total_inscripciones ? ((stats.total_admitidos / stats.total_inscripciones) * 100).toFixed(1) + '%' : '0%'}</div>
+                        <div class="stat-value">${totalAdmitidos}</div>
+                        <div class="stat-change change-positive">${totalInscripciones ? ((totalAdmitidos / totalInscripciones) * 100).toFixed(1) + '%' : '0%'}</div>
                     </div>
                     <div class="stat-card">
                         <h3>Documentos Aprobados</h3>
-                        <div class="stat-value">${stats.documentos_aprobados || 0}</div>
-                        <div class="stat-change">${stats.documentos_pendientes || 0} pendientes</div>
+                        <div class="stat-value">${parseInt(stats.documentos_aprobados) || 0}</div>
+                        <div class="stat-change">${parseInt(stats.documentos_pendientes) || 0} pendientes</div>
                     </div>
                 `;
                 
@@ -789,16 +607,19 @@ try {
                 `;
                 
                 carreras.forEach(carrera => {
-                    const porcentajeDemanda = carrera.porcentaje_demanda || 0;
-                    const porcentajeAdmitidos = carrera.total_inscripciones ? ((carrera.admitidos / carrera.total_inscripciones) * 100).toFixed(1) : '0';
+                    const porcentajeDemanda = parseFloat(carrera.porcentaje_demanda) || 0;
+                    const totalInscripciones = parseInt(carrera.total_inscripciones) || 0;
+                    const admitidos = parseInt(carrera.admitidos) || 0;
+                    const promedio = parseFloat(carrera.promedio_puntaje) || 0;
+                    const porcentajeAdmitidos = totalInscripciones ? ((admitidos / totalInscripciones) * 100).toFixed(1) : '0';
                     
                     tablaHTML += `
                         <tr>
                             <td><strong>${escapeHtml(carrera.carrera || 'N/A')}</strong><br><small>${carrera.codigo || ''}</small></td>
                             <td>${escapeHtml(carrera.facultad || 'N/A')}</td>
-                            <td>${carrera.total_inscripciones || 0}</td>
-                            <td>${carrera.admitidos || 0} (${porcentajeAdmitidos}%)</td>
-                            <td>${carrera.promedio_puntaje ? carrera.promedio_puntaje.toFixed(2) : 'N/A'}</td>
+                            <td>${totalInscripciones}</td>
+                            <td>${admitidos} (${porcentajeAdmitidos}%)</td>
+                            <td>${promedio.toFixed(2)}</td>
                             <td>
                                 ${porcentajeDemanda}%
                                 <div class="progress-bar">
@@ -827,13 +648,13 @@ try {
                         }),
                         datasets: [{
                             label: 'Total Inscripciones',
-                            data: carreras.map(c => c.total_inscripciones || 0),
+                            data: carreras.map(c => parseInt(c.total_inscripciones) || 0),
                             backgroundColor: 'rgba(102, 126, 234, 0.8)',
                             borderColor: 'rgba(102, 126, 234, 1)',
                             borderWidth: 1
                         }, {
                             label: 'Admitidos',
-                            data: carreras.map(c => c.admitidos || 0),
+                            data: carreras.map(c => parseInt(c.admitidos) || 0),
                             backgroundColor: 'rgba(40, 167, 69, 0.8)',
                             borderColor: 'rgba(40, 167, 69, 1)',
                             borderWidth: 1
@@ -882,7 +703,7 @@ try {
                         labels: data.map(item => item.nombre_mes || ''),
                         datasets: [{
                             label: 'Total Inscripciones',
-                            data: data.map(item => item.total_inscripciones || 0),
+                            data: data.map(item => parseInt(item.total_inscripciones) || 0),
                             borderColor: 'rgba(102, 126, 234, 1)',
                             backgroundColor: 'rgba(102, 126, 234, 0.1)',
                             borderWidth: 2,
@@ -890,7 +711,7 @@ try {
                             tension: 0.4
                         }, {
                             label: 'Postulantes Únicos',
-                            data: data.map(item => item.postulantes_unicos || 0),
+                            data: data.map(item => parseInt(item.postulantes_unicos) || 0),
                             borderColor: 'rgba(40, 167, 69, 1)',
                             backgroundColor: 'rgba(40, 167, 69, 0.1)',
                             borderWidth: 2,
@@ -937,7 +758,7 @@ try {
                     data: {
                         labels: data.map(item => item.facultad || ''),
                         datasets: [{
-                            data: data.map(item => item.total_inscripciones || 0),
+                            data: data.map(item => parseInt(item.total_inscripciones) || 0),
                             backgroundColor: [
                                 '#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe',
                                 '#43e97b', '#38f9d7', '#fa709a', '#fee140', '#a8edea'
@@ -986,7 +807,7 @@ try {
                     data: {
                         labels: data.map(item => item.rango_puntaje || ''),
                         datasets: [{
-                            data: data.map(item => item.cantidad_postulantes || 0),
+                            data: data.map(item => parseInt(item.cantidad_postulantes) || 0),
                             backgroundColor: [
                                 '#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6'
                             ],
@@ -1005,7 +826,7 @@ try {
                                 callbacks: {
                                     label: function(context) {
                                         const item = data[context.dataIndex];
-                                        return `${item.rango_puntaje}: ${item.cantidad_postulantes} postulantes (${item.porcentaje}%)`;
+                                        return `${item.rango_puntaje}: ${parseInt(item.cantidad_postulantes) || 0} postulantes (${parseFloat(item.porcentaje) || 0}%)`;
                                     }
                                 }
                             }
@@ -1026,12 +847,16 @@ try {
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
-            return div.innerHTML;s
+            return div.innerHTML;
         }
         
         function exportarPDF() {
             alert('Funcionalidad de exportación PDF - Se implementaría con una librería como jsPDF');
             // Aquí se implementaría la generación de PDF
+        }
+        
+        function volverAlLogin() {
+            window.location.href = 'login.html';
         }
     </script>
 </body>

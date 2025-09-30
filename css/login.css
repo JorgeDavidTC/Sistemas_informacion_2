@@ -1,4 +1,4 @@
-/* Fuente general */
+/* Fuente general y reset mejorado */
 * {
   margin: 0;
   padding: 0;
@@ -6,91 +6,506 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Fondo */
+/* Fondo con gradiente mejorado */
 body {
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #122E34, #0E1D21);
+  background: linear-gradient(135deg, 
+    #122E34 0%, 
+    #0E1D21 25%, 
+    #1A3A42 50%, 
+    #0E1D21 75%, 
+    #122E34 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  overflow: hidden;
 }
 
-/* Contenedor */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Contenedor principal */
 .login-container {
-  background: #fff;
-  padding: 40px 35px;
-  border-radius: 15px;
-  box-shadow: 0px 6px 20px rgba(0,0,0,0.2);
-  width: 350px;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- SECCIÓN HERO MEJORADA --- */
+.hero-section {
+  position: relative;
+  flex: 1.5; /* Más espacio para la imagen */
+  min-width: 60%;
+  height: 100vh;
+  background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e'); 
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    rgba(18, 46, 52, 0.85) 0%, 
+    rgba(14, 29, 33, 0.9) 50%, 
+    rgba(18, 46, 52, 0.8) 100%);
+  backdrop-filter: blur(2px);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  text-align: center;
+  padding: 40px;
+  max-width: 800px;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #E1E8ED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+}
+
+.hero-description {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hero-paragraph {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #E1E8ED 0%, #B8C5CC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.9;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- SECCIÓN DEL FORMULARIO MEJORADA --- */
+.form-section {
+  flex: 1;
+  min-width: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, 
+    rgba(171, 175, 181, 0.95) 0%, 
+    rgba(150, 155, 161, 0.98) 100%);
+  padding: 40px 20px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.form-container {
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(248, 250, 252, 0.95) 100%);
+  padding: 50px 40px;
+  border-radius: 24px;
+  box-shadow: 
+    0 20px 40px rgba(18, 46, 52, 0.3),
+    0 8px 25px rgba(18, 46, 52, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: slideInRight 0.8s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.form-header {
+  margin-bottom: 35px;
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(18, 46, 52, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #122E34 0%, #1A4A54 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+/* Formulario mejorado */
+.login-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 28px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #0E1D21 0%, #122E34 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  border: 2px solid #E1E8ED;
+  border-radius: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.input-container::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #122E34 0%, #1A4A54 100%);
+  transition: width 0.3s ease;
+}
+
+.input-container:focus-within {
+  border-color: #122E34;
+  box-shadow: 
+    0 0 0 4px rgba(18, 46, 52, 0.1),
+    0 8px 20px rgba(18, 46, 52, 0.15);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F0F4F8 100%);
+  transform: translateY(-2px);
+}
+
+.input-container:focus-within::before {
+  width: 100%;
+}
+
+.input-icon {
+  margin-right: 12px;
+  background: linear-gradient(135deg, #677E8A 0%, #4A5D67 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.1rem;
+  width: 20px;
   text-align: center;
 }
 
-/* Título */
-.login-container h1 {
-  margin-bottom: 20px;
-  color: #122E34;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-/* Grupos de inputs */
-.form-group {
-  text-align: left;
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #0E1D21;
-  margin-bottom: 5px;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #677E8A;
-  border-radius: 8px;
+.form-input {
+  border: none;
   outline: none;
-  font-size: 14px;
-  transition: border 0.3s;
+  flex: 1;
+  font-size: 1rem;
+  background: transparent;
+  color: #0E1D21;
+  font-weight: 500;
 }
 
-input:focus {
-  border: 1px solid #122E34;
-  box-shadow: 0px 0px 5px rgba(18, 46, 52, 0.4);
+.form-input::placeholder {
+  color: #9CA3AF;
+  font-weight: 400;
 }
 
-/* Botón */
-button {
-  width: 100%;
-  padding: 12px;
-  background: linear-gradient(45deg, #122E34, #0E1D21);
+/* Opciones del formulario */
+.form-options {
+  margin: 25px 0;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0E1D21 0%, #122E34 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.checkbox-container:hover {
+  transform: translateX(5px);
+}
+
+.checkbox-container input {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.checkmark {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #E1E8ED;
+  border-radius: 4px;
+  margin-right: 10px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-container input:checked + .checkmark {
+  background: linear-gradient(135deg, #122E34 0%, #1A4A54 100%);
+  border-color: #122E34;
+}
+
+.checkbox-container input:checked + .checkmark::after {
+  content: '✓';
+  position: absolute;
   color: white;
-  font-size: 16px;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Grupo de botones mejorado */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.btn {
+  padding: 16px;
+  font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
 }
 
-button:hover {
-  background: linear-gradient(45deg, #677E8A, #122E34);
+.btn-primary {
+  background: linear-gradient(135deg, 
+    #122E34 0%, 
+    #1A4A54 25%, 
+    #122E34 50%, 
+    #0E1D21 75%, 
+    #122E34 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(18, 46, 52, 0.4);
 }
 
-/* Errores */
+.btn-secondary {
+  background: linear-gradient(135deg, 
+    #4A5D67 0%, 
+    #677E8A 25%, 
+    #4A5D67 50%, 
+    #3A4A52 75%, 
+    #4A5D67 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(74, 93, 103, 0.3);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+  transition: left 0.6s;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(18, 46, 52, 0.5);
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:active {
+  transform: translateY(-1px);
+}
+
+/* Pie del formulario */
+.form-footer {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.forgot-password, .register-link {
+  margin-bottom: 15px;
+}
+
+.footer-link {
+  background: linear-gradient(135deg, #622347 0%, #7A2C4E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #622347 0%, #7A2C4E 100%);
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover {
+  background: linear-gradient(135deg, #7A2C4E 0%, #93355A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+.register-link p {
+  font-size: 0.9rem;
+  color: #4B5563;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .hero-section {
+    flex: none;
+    height: 40vh;
+    min-width: 100%;
+  }
+  
+  .form-section {
+    flex: none;
+    min-width: 100%;
+    padding: 30px 20px;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-paragraph {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: 30px 25px;
+    margin: 0 15px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-content {
+    padding: 20px;
+  }
+}
+
+/* Estados de error mejorados */
 .error {
-  color: #E0B4B2;
-  font-size: 13px;
-  margin-top: 5px;
+  background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 0.85rem;
+  margin-top: 8px;
   display: block;
+  font-weight: 500;
+  padding-left: 5px;
 }
 
 .error-server {
-  margin-top: 15px;
-  color: #E0B4B2;
-  font-size: 14px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 0.95rem;
   font-weight: 600;
+  padding: 12px;
+  border-radius: 10px;
+  background-color: rgba(229, 62, 62, 0.1);
+  border: 1px solid rgba(229, 62, 62, 0.3);
 }
